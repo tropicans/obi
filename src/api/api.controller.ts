@@ -29,6 +29,33 @@ export class ApiController {
         });
     }
 
+    @Post('users/:id')
+    async updateUser(
+        @Param('id') id: string,
+        @Body() data: { name?: string; phoneE164?: string; timezone?: string },
+    ) {
+        return this.prisma.user.update({
+            where: { id },
+            data,
+            include: { pets: true },
+        });
+    }
+
+    @Post('users')
+    async createUser(
+        @Body() data: { name: string; phoneE164: string; timezone?: string },
+    ) {
+        return this.prisma.user.create({
+            data: {
+                name: data.name,
+                phoneE164: data.phoneE164,
+                timezone: data.timezone || 'Asia/Jakarta',
+            },
+            include: { pets: true },
+        });
+    }
+
+
     // ============ Pets ============
     @Get('pets')
     async getPets() {
@@ -43,6 +70,49 @@ export class ApiController {
             where: { id },
             include: { user: true, schedules: { include: { template: true } } },
         });
+    }
+
+    @Post('pets')
+    async createPet(
+        @Body() data: { userId: string; name: string; species?: string; tankLiters?: number },
+    ) {
+        // Create pet
+        const pet = await this.prisma.pet.create({
+            data: {
+                userId: data.userId,
+                name: data.name,
+                species: data.species || 'Betta',
+                tankLiters: data.tankLiters || 2.6,
+            },
+            include: { user: true },
+        });
+
+        // Auto-create default schedules for the new pet
+        const templates = await this.prisma.messageTemplate.findMany();
+        const defaultCrons: Record<string, string> = {
+            daily: '0 9 * * *',
+            bi_daily: '0 9 */2 * *',
+            weekly: '0 9 * * 0',
+            bi_weekly: '0 9 1,15 * *',
+        };
+
+        for (const template of templates) {
+            if (template.key !== 'emergency' && defaultCrons[template.key]) {
+                const schedule = await this.prisma.schedule.create({
+                    data: {
+                        userId: data.userId,
+                        petId: pet.id,
+                        templateId: template.id,
+                        cron: defaultCrons[template.key],
+                        enabled: true,
+                    },
+                    include: { user: true, pet: true, template: true },
+                });
+                this.scheduler.scheduleJob(schedule);
+            }
+        }
+
+        return pet;
     }
 
     // ============ Templates ============

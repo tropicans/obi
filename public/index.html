@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Obi Reminder - Aplikasi pengingat perawatan ikan cupang via WhatsApp">
+    <title>🐠 Obi Reminder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo">🐠</span>
+                <h1>Obi Reminder</h1>
+            </div>
+            <nav class="nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="#schedules" class="nav-item" data-page="schedules">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-text">Jadwal</span>
+                </a>
+                <a href="#templates" class="nav-item" data-page="templates">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Templates</span>
+                </a>
+                <a href="#logs" class="nav-item" data-page="logs">
+                    <span class="nav-icon">📜</span>
+                    <span class="nav-text">Logs</span>
+                </a>
+                <a href="#manage" class="nav-item" data-page="manage">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Kelola</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Dashboard Page -->
+            <section id="dashboard" class="page active">
+                <header class="page-header">
+                    <h2>Dashboard</h2>
+                    <p class="page-subtitle">Selamat datang! Pantau status Obi di sini.</p>
+                </header>
+
+                <div class="dashboard-grid">
+                    <!-- Pet Status Card -->
+                    <article class="card pet-card">
+                        <div class="card-icon">🐠</div>
+                        <div class="card-content">
+                            <h3 id="petName">Obi</h3>
+                            <p class="pet-species" id="petSpecies">Betta</p>
+                            <p class="pet-tank">Tank: <span id="petTank">2.6</span>L</p>
+                        </div>
+                    </article>
+
+                    <!-- Next Reminder Card -->
+                    <article class="card reminder-card">
+                        <div class="card-icon">⏰</div>
+                        <div class="card-content">
+                            <h3>Pengingat Berikutnya</h3>
+                            <p class="countdown" id="nextReminder">Menghitung...</p>
+                            <p class="reminder-type" id="nextReminderType">-</p>
+                        </div>
+                    </article>
+
+                    <!-- Stats Card -->
+                    <article class="card stats-card">
+                        <div class="card-icon">📊</div>
+                        <div class="card-content">
+                            <h3>Statistik</h3>
+                            <div class="stats-grid">
+                                <div class="stat">
+                                    <span class="stat-value" id="totalSent">0</span>
+                                    <span class="stat-label">Terkirim</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value" id="totalCompleted">0</span>
+                                    <span class="stat-label">Selesai</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Recent Activity -->
+                    <article class="card activity-card">
+                        <div class="card-header">
+                            <h3>📝 Aktivitas Terbaru</h3>
+                        </div>
+                        <div class="activity-list" id="recentLogs">
+                            <p class="loading">Memuat...</p>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Emergency Button -->
+                <button class="emergency-btn" id="emergencyBtn" title="Kirim pengingat darurat">
+                    🚨 DARURAT
+                </button>
+            </section>
+
+            <!-- Schedules Page -->
+            <section id="schedules" class="page">
+                <header class="page-header">
+                    <h2>📅 Jadwal Pengingat</h2>
+                    <p class="page-subtitle">Kelola jadwal pengingat Obi</p>
+                </header>
+
+                <div class="schedules-list" id="schedulesList">
+                    <p class="loading">Memuat jadwal...</p>
+                </div>
+            </section>
+
+            <!-- Templates Page -->
+            <section id="templates" class="page">
+                <header class="page-header">
+                    <h2>📋 Template Pesan</h2>
+                    <p class="page-subtitle">Lihat template pesan WhatsApp</p>
+                </header>
+
+                <div class="templates-grid" id="templatesList">
+                    <p class="loading">Memuat template...</p>
+                </div>
+            </section>
+
+            <!-- Logs Page -->
+            <section id="logs" class="page">
+                <header class="page-header">
+                    <h2>📜 Riwayat Pengiriman</h2>
+                    <p class="page-subtitle">Log semua pesan yang dikirim</p>
+                </header>
+
+                <div class="logs-filters">
+                    <select id="logFilter" class="filter-select">
+                        <option value="">Semua Status</option>
+                        <option value="sent">Terkirim</option>
+                        <option value="completed">Selesai</option>
+                        <option value="failed">Gagal</option>
+                    </select>
+                </div>
+
+                <div class="logs-table-wrapper">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Template</th>
+                                <th>Status</th>
+                                <th>Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <tr>
+                                <td colspan="4" class="loading">Memuat log...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Manage Page -->
+            <section id="manage" class="page">
+                <header class="page-header">
+                    <h2>⚙️ Kelola</h2>
+                    <p class="page-subtitle">Tambah pengguna dan cupang baru</p>
+                </header>
+
+                <div class="manage-grid">
+                    <!-- Users Section -->
+                    <article class="card manage-card">
+                        <div class="card-header">
+                            <h3>👤 Pengguna</h3>
+                        </div>
+                        <div class="users-list" id="usersList">
+                            <p class="loading">Memuat pengguna...</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" id="addUserBtn">+ Tambah Pengguna</button>
+                        </div>
+                    </article>
+
+                    <!-- Pets Section -->
+                    <article class="card manage-card">
+                        <div class="card-header">
+                            <h3>🐠 Cupang</h3>
+                        </div>
+                        <div class="pets-list" id="petsList">
+                            <p class="loading">Memuat cupang...</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" id="addPetBtn">+ Tambah Cupang</button>
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-message"></span>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-icon">🚨</div>
+            <h3>Konfirmasi Darurat</h3>
+            <p>Apakah Anda yakin ingin mengirim pengingat darurat untuk Obi?</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelEmergency">Batal</button>
+                <button class="btn btn-danger" id="confirmEmergency">Ya, Kirim!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-icon">👤</div>
+            <h3>Tambah Pengguna Baru</h3>
+            <form id="addUserForm" class="modal-form">
+                <div class="form-group">
+                    <label for="userName">Nama</label>
+                    <input type="text" id="userName" name="name" required placeholder="Nama pengguna">
+                </div>
+                <div class="form-group">
+                    <label for="userPhone">No. WhatsApp</label>
+                    <input type="tel" id="userPhone" name="phone" required placeholder="628xxxxxxxxxx">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelAddUser">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Pet Modal -->
+    <div class="modal" id="addPetModal">
+        <div class="modal-content">
+            <div class="modal-icon">🐠</div>
+            <h3>Tambah Cupang Baru</h3>
+            <form id="addPetForm" class="modal-form">
+                <div class="form-group">
+                    <label for="petOwner">Pemilik</label>
+                    <select id="petOwner" name="userId" required>
+                        <option value="">Pilih pemilik...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="petNameInput">Nama Cupang</label>
+                    <input type="text" id="petNameInput" name="name" required placeholder="Nama cupang">
+                </div>
+                <div class="form-group">
+                    <label for="petSpeciesInput">Jenis</label>
+                    <input type="text" id="petSpeciesInput" name="species" value="Betta" placeholder="Betta">
+                </div>
+                <div class="form-group">
+                    <label for="petTankInput">Volume Tank (L)</label>
+                    <input type="number" id="petTankInput" name="tankLiters" value="2.6" step="0.1" min="0.5">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelAddPet">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
