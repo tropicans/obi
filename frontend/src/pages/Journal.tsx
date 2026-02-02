@@ -48,19 +48,21 @@ const JournalItem = ({
 
             {/* Content */}
             <div className="flex-1 rounded-3xl bg-white p-6 shadow-apple-card border border-white/60">
-                <div className="flex items-center justify-between gap-4 mb-2">
+                <div className="flex items-start sm:items-center justify-between gap-2 sm:gap-4 mb-2 flex-wrap">
                     <div className="flex items-center gap-2 text-sm">
                         <span className="font-bold text-gray-900">{entry.pet?.name}</span>
                         <span className="text-gray-400">•</span>
                         <span className="text-gray-500 font-medium">Activity</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 text-xs text-gray-400">
+                        <div className="flex items-center gap-1.5 sm:gap-2 text-xs text-gray-400 flex-wrap">
                             <Clock size={12} />
                             {new Date(entry.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            <span className="mx-1">•</span>
-                            <Calendar size={12} />
-                            {new Date(entry.createdAt).toLocaleDateString()}
+                            <span className="hidden sm:inline mx-1">•</span>
+                            <span className="flex items-center gap-1">
+                                <Calendar size={12} />
+                                {new Date(entry.createdAt).toLocaleDateString()}
+                            </span>
                         </div>
                         {!isEditing && (
                             <div className="flex items-center gap-1">
@@ -207,14 +209,14 @@ export const Journal = () => {
 
     return (
         <div className="space-y-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-4xl font-bold tracking-tight text-gray-900">Activity Journal</h1>
-                    <p className="text-lg text-gray-500">A historical record of everything you do for your fish.</p>
+                    <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">Activity Journal</h1>
+                    <p className="text-base sm:text-lg text-gray-500">A historical record of everything you do for your fish.</p>
                 </div>
                 <button
                     onClick={() => setIsAdding(!isAdding)}
-                    className="flex items-center gap-2 rounded-full bg-apple-blue px-6 py-2 text-sm font-semibold text-white shadow-lg shadow-apple-blue/20 transition-all hover:bg-blue-600 active:scale-95"
+                    className="flex items-center justify-center gap-2 rounded-full bg-apple-blue px-6 py-2 text-sm font-semibold text-white shadow-lg shadow-apple-blue/20 transition-all hover:bg-blue-600 active:scale-95 shrink-0"
                 >
                     <BookOpen size={16} />
                     {isAdding ? 'Cancel' : 'Log New Activity'}
@@ -261,7 +263,7 @@ export const Journal = () => {
                     ))}
                 </div>
             ) : (
-                <div className="max-w-3xl ml-4">
+                <div className="max-w-3xl">
                     {journal?.map((entry: any, i: number) => (
                         <JournalItem
                             key={entry.id}
