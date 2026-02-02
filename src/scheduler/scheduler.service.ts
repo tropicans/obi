@@ -1,4 +1,5 @@
 import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as cron from 'node-cron';
 import { PrismaService } from '../prisma/prisma.service';
 import { FonnteService } from '../fonnte/fonnte.service';
@@ -14,6 +15,7 @@ export class SchedulerService implements OnModuleInit, OnModuleDestroy {
         private prisma: PrismaService,
         private fonnte: FonnteService,
         private ai: AiService,
+        private configService: ConfigService,
     ) { }
 
 
@@ -133,7 +135,14 @@ export class SchedulerService implements OnModuleInit, OnModuleDestroy {
         }
 
         const message = `*${template.title}*\n\n${template.body}`;
-        const result = await this.fonnte.sendMessage(pet.user.phoneE164, message);
+
+        // Use DEFAULT_PHONE as fallback if user phone looks like placeholder
+        let phoneNumber = pet.user.phoneE164;
+        if (!phoneNumber || phoneNumber.includes('1234567890')) {
+            phoneNumber = this.configService.get<string>('DEFAULT_PHONE') || phoneNumber;
+        }
+
+        const result = await this.fonnte.sendMessage(phoneNumber, message);
 
         await this.prisma.messageLog.create({
             data: {
