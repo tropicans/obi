@@ -118,7 +118,7 @@ export const Dashboard = () => {
     }, []);
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 overflow-x-hidden">
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -163,7 +163,7 @@ export const Dashboard = () => {
 
                 {/* AI Assistant Card (Wide) */}
 
-                <BentoCard className="md:col-span-2 lg:col-span-4 bg-gradient-to-br from-indigo-50 to-white overflow-visible" title="Obi Assistant" icon={BookOpen}>
+                <BentoCard className="md:col-span-2 lg:col-span-4 bg-gradient-to-br from-indigo-50 to-white" title="Obi Assistant" icon={BookOpen}>
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
                             <div className="self-start rounded-2xl bg-white p-3 text-sm shadow-sm border border-indigo-100 max-w-[80%]">
