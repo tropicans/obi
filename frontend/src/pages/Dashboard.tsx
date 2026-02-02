@@ -67,6 +67,19 @@ export const Dashboard = () => {
         }
     });
 
+    const emergencyMutation = useMutation({
+        mutationFn: async () => {
+            if (!activePet) throw new Error('No pet found');
+            await api.post(`/emergency/${activePet.id}`);
+        },
+        onSuccess: () => {
+            alert('🚨 Emergency alert sent to WhatsApp!');
+        },
+        onError: (error: any) => {
+            alert(`❌ Failed to send alert: ${error.message || 'Unknown error'}`);
+        }
+    });
+
     const askAi = async () => {
         if (!aiQuestion.trim()) return;
         const question = aiQuestion;
@@ -299,8 +312,13 @@ export const Dashboard = () => {
                 <BentoCard className="col-span-1 bg-red-50 border-red-100" title="Emergency" icon={AlertCircle}>
 
                     <p className="text-sm text-red-600/80 mb-4">Something wrong with Obi?</p>
-                    <button className="w-full rounded-full bg-red-500 py-2 text-sm font-medium text-white shadow-lg shadow-red-500/30 transition-transform active:scale-95">
-                        Trigger Alert
+                    <button 
+                        onClick={() => emergencyMutation.mutate()}
+                        disabled={emergencyMutation.isPending || !activePet}
+                        className="flex items-center justify-center gap-2 w-full rounded-full bg-red-500 py-2 text-sm font-medium text-white shadow-lg shadow-red-500/30 transition-transform active:scale-95 disabled:opacity-50"
+                    >
+                        {emergencyMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <AlertCircle size={16} />}
+                        {emergencyMutation.isPending ? 'Sending...' : 'Trigger Alert'}
                     </button>
                 </BentoCard>
 
