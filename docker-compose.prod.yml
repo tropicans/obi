@@ -9,7 +9,7 @@ services:
     environment:
       - PORT=3007
       - NODE_ENV=production
-      - DATABASE_URL=file:/usr/src/app/prisma/obi.db
+      - DATABASE_URL=file:/usr/src/app/data/obi.db
       - FONNTE_API_KEY=${FONNTE_API_KEY}
       - DEFAULT_PHONE=${DEFAULT_PHONE}
       - AI_PROXY_KEY=${AI_PROXY_KEY}
@@ -17,7 +17,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     volumes:
-      - ./data:/usr/src/app/prisma
+      - ./data:/usr/src/app/data
     restart: always
     healthcheck:
       test: [ "CMD", "wget", "-q", "--spider", "http://localhost:3007/api/users" ]
