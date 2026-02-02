@@ -259,7 +259,12 @@ export class ApiController {
         });
 
         const logs = await this.prisma.messageLog.findMany({
-            where: { petId },
+            where: {
+                petId,
+                template: {
+                    key: { not: 'emergency' } // Exclude emergency logs (usually tests)
+                }
+            },
             include: { template: true },
             orderBy: { sentAt: 'desc' },
             take: 5,
