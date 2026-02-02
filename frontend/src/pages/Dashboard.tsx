@@ -130,10 +130,10 @@ export const Dashboard = () => {
             </motion.div>
 
             {/* Main Grid */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
 
                 {/* Situation Insights (AI Prediction) */}
-                <BentoCard className="col-span-2 md:col-span-4 bg-gradient-to-br from-amber-50 to-white" title="Obi's Situation Analysis" icon={Sparkles}>
+                <BentoCard className="md:col-span-2 lg:col-span-4 bg-gradient-to-br from-amber-50 to-white" title="Obi's Situation Analysis" icon={Sparkles}>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="flex-1">
                             {isPredicting ? (
@@ -163,7 +163,7 @@ export const Dashboard = () => {
 
                 {/* AI Assistant Card (Wide) */}
 
-                <BentoCard className="col-span-2 md:col-span-4 bg-gradient-to-br from-indigo-50 to-white overflow-visible" title="Obi Assistant" icon={BookOpen}>
+                <BentoCard className="md:col-span-2 lg:col-span-4 bg-gradient-to-br from-indigo-50 to-white overflow-visible" title="Obi Assistant" icon={BookOpen}>
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
                             <div className="self-start rounded-2xl bg-white p-3 text-sm shadow-sm border border-indigo-100 max-w-[80%]">
@@ -208,7 +208,7 @@ export const Dashboard = () => {
 
                 {/* Status Card (Large) */}
 
-                <BentoCard className="col-span-2 row-span-2 bg-gradient-to-br from-blue-50 to-white" title="Current Status" icon={Fish}>
+                <BentoCard className="md:col-span-2 bg-gradient-to-br from-blue-50 to-white" title="Current Status" icon={Fish}>
                     <div className="flex h-full flex-col justify-between">
                         <div className="space-y-2">
                             <div className="flex items-center gap-3">
@@ -224,7 +224,7 @@ export const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 py-6">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4 py-4 sm:py-6">
                             <div className="text-center p-3 rounded-2xl bg-blue-50/50">
                                 <span className="block text-2xl font-bold text-gray-900">2.6L</span>
                                 <span className="text-xs text-gray-500">Volume</span>
@@ -312,7 +312,7 @@ export const Dashboard = () => {
                 <BentoCard className="col-span-1 bg-red-50 border-red-100" title="Emergency" icon={AlertCircle}>
 
                     <p className="text-sm text-red-600/80 mb-4">Something wrong with Obi?</p>
-                    <button 
+                    <button
                         onClick={() => emergencyMutation.mutate()}
                         disabled={emergencyMutation.isPending || !activePet}
                         className="flex items-center justify-center gap-2 w-full rounded-full bg-red-500 py-2 text-sm font-medium text-white shadow-lg shadow-red-500/30 transition-transform active:scale-95 disabled:opacity-50"
