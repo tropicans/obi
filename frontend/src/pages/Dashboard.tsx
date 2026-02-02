@@ -130,7 +130,7 @@ export const Dashboard = () => {
             </motion.div>
 
             {/* Main Grid */}
-            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4 overflow-hidden">
 
                 {/* Situation Insights (AI Prediction) */}
                 <BentoCard className="md:col-span-2 lg:col-span-4 bg-gradient-to-br from-amber-50 to-white" title="Obi's Situation Analysis" icon={Sparkles}>
@@ -244,7 +244,7 @@ export const Dashboard = () => {
                 </BentoCard>
 
                 {/* Next Feeding */}
-                <BentoCard className="col-span-1" title="Next Feeding" icon={Utensils}>
+                <BentoCard title="Next Feeding" icon={Utensils}>
                     <div className="flex flex-col items-center justify-center py-4">
                         <span className="text-3xl font-bold text-gray-900">08:00</span>
                         <span className="text-sm text-gray-500">Tomorrow Morning</span>
@@ -255,7 +255,7 @@ export const Dashboard = () => {
                 </BentoCard>
 
                 {/* Water Change */}
-                <BentoCard className="col-span-1" title="Water Quality" icon={Droplets}>
+                <BentoCard title="Water Quality" icon={Droplets}>
                     <div className="space-y-4">
                         <div className="flex justify-between items-end">
                             <span className="text-3xl font-bold text-gray-900">7 Days</span>
