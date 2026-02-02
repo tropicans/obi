@@ -133,7 +133,7 @@ export const Dashboard = () => {
             <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4 overflow-hidden">
 
                 {/* Situation Insights (AI Prediction) */}
-                <BentoCard className="md:col-span-2 lg:col-span-4 bg-gradient-to-br from-amber-50 to-white" title="Obi's Situation Analysis" icon={Sparkles}>
+                <BentoCard className="sm:col-span-2 lg:col-span-4 bg-white" title="Obi's Situation Analysis" icon={Sparkles}>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="flex-1">
                             {isPredicting ? (
@@ -323,6 +323,6 @@ export const Dashboard = () => {
                 </BentoCard>
 
             </div>
-        </div>
+        </div >
     );
 };
