@@ -2,6 +2,8 @@ import { Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/commo
 import * as cron from 'node-cron';
 import { PrismaService } from '../prisma/prisma.service';
 import { FonnteService } from '../fonnte/fonnte.service';
+import { AiService } from '../ai/ai.service';
+
 
 @Injectable()
 export class SchedulerService implements OnModuleInit, OnModuleDestroy {
@@ -11,7 +13,9 @@ export class SchedulerService implements OnModuleInit, OnModuleDestroy {
     constructor(
         private prisma: PrismaService,
         private fonnte: FonnteService,
+        private ai: AiService,
     ) { }
+
 
     async onModuleInit() {
         this.logger.log('Initializing scheduler...');
@@ -84,7 +88,9 @@ export class SchedulerService implements OnModuleInit, OnModuleDestroy {
     }) {
         this.logger.log(`Executing schedule: ${schedule.template.title} for ${schedule.pet.name}`);
 
-        const message = `*${schedule.template.title}*\n\n${schedule.template.body}`;
+        const personalizedContent = await this.ai.generateNotification(schedule.template.title);
+        const message = `*${schedule.template.title}*\n\n${personalizedContent}`;
+
 
         const result = await this.fonnte.sendMessage(schedule.user.phoneE164, message);
 

@@ -9,8 +9,16 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Enable CORS for development
-  app.enableCors();
+  // Enable CORS for production
+  app.enableCors({
+    origin: [
+      'http://localhost:3006',
+      'http://localhost:5173',
+      'https://obi.kelazz.my.id',
+      'http://obi.kelazz.my.id',
+    ],
+    credentials: true,
+  });
 
   // Serve static files from public folder
   app.useStaticAssets(join(process.cwd(), 'public'));

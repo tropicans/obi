@@ -1,9 +1,13 @@
-import { Controller, Get, Post, Param, Body, Query, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Query, Logger, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SchedulerService } from '../scheduler/scheduler.service';
 import { FonnteService } from '../fonnte/fonnte.service';
+import { AiService } from '../ai/ai.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
 
 @Controller('api')
+@UseGuards(JwtAuthGuard)
 export class ApiController {
     private readonly logger = new Logger(ApiController.name);
 
@@ -11,7 +15,9 @@ export class ApiController {
         private prisma: PrismaService,
         private scheduler: SchedulerService,
         private fonnte: FonnteService,
+        private ai: AiService,
     ) { }
+
 
     // ============ Users ============
     @Get('users')
@@ -197,4 +203,83 @@ export class ApiController {
     async testSend(@Body() data: { phone: string; message: string }) {
         return this.fonnte.sendMessage(data.phone, data.message);
     }
+
+    // ============ Journal ============
+    @Get('journal')
+    async getJournal(@Query('petId') petId?: string) {
+        return this.prisma.journalEntry.findMany({
+            where: petId ? { petId } : undefined,
+            include: { pet: true },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+
+    @Post('journal')
+    async createJournal(
+        @Body() data: { petId: string; userId: string; content: string },
+    ) {
+        return this.prisma.journalEntry.create({
+            data: {
+                petId: data.petId,
+                userId: data.userId,
+                content: data.content,
+            },
+            include: { pet: true },
+        });
+    }
+
+    @Put('journal/:id')
+    async updateJournal(
+        @Param('id') id: string,
+        @Body() data: { content: string },
+    ) {
+        return this.prisma.journalEntry.update({
+            where: { id },
+            data: { content: data.content },
+            include: { pet: true },
+        });
+    }
+
+    @Delete('journal/:id')
+    async deleteJournal(@Param('id') id: string) {
+        await this.prisma.journalEntry.delete({
+            where: { id },
+        });
+        return { success: true, message: 'Journal entry deleted' };
+    }
+
+    // ============ AI Assistant ============
+    @Get('ai/predict')
+    async getPrediction(@Query('petId') petId: string) {
+        // Fetch recent journal entries and logs for context
+        const entries = await this.prisma.journalEntry.findMany({
+            where: { petId },
+            orderBy: { createdAt: 'desc' },
+            take: 5,
+        });
+
+        const logs = await this.prisma.messageLog.findMany({
+            where: { petId },
+            include: { template: true },
+            orderBy: { sentAt: 'desc' },
+            take: 5,
+        });
+
+        const context = [
+            ...entries.map(e => `[${e.createdAt.toISOString()}] Journal: ${e.content}`),
+            ...logs.map(l => `[${l.sentAt.toISOString()}] Event: ${l.template.title}`),
+        ].join('\n');
+
+        const prediction = await this.ai.predictSituation(context);
+        return { prediction };
+    }
+
+    @Post('ai/ask')
+
+    async askAi(@Body() data: { question: string }) {
+        const answer = await this.ai.ask(data.question);
+        return { answer };
+    }
 }
+
+

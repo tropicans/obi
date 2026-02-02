@@ -1,0 +1,36 @@
+services:
+  obi-app:
+    build:
+      context: .
+      target: production
+    container_name: obi-reminder
+    ports:
+      - "3007:3007"
+    environment:
+      - PORT=3007
+      - NODE_ENV=production
+      - DATABASE_URL=file:/usr/src/app/prisma/obi.db
+      - FONNTE_API_KEY=${FONNTE_API_KEY}
+      - DEFAULT_PHONE=${DEFAULT_PHONE}
+      - AI_PROXY_KEY=${AI_PROXY_KEY}
+      - AI_MODEL=${AI_MODEL}
+      - JWT_SECRET=${JWT_SECRET}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    volumes:
+      - ./data:/usr/src/app/prisma
+    restart: always
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:3007/api/users" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  obi-web:
+    build:
+      context: ./frontend
+    container_name: obi-web
+    ports:
+      - "80:80"
+    depends_on:
+      - obi-app
+    restart: always

@@ -5,6 +5,8 @@ import { FonnteModule } from './fonnte';
 import { SchedulerModule } from './scheduler';
 import { WebhookModule } from './webhook';
 import { ApiModule } from './api';
+import { AiModule } from './ai';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { ApiModule } from './api';
     SchedulerModule,
     WebhookModule,
     ApiModule,
+    AiModule,
+    AuthModule,
   ],
 })
 export class AppModule { }
